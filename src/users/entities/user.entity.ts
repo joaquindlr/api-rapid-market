@@ -1,4 +1,4 @@
-import { Market } from 'src/market/entities/market.entity';
+import { Market } from 'src/markets/entities/market.entity';
 import {
   Column,
   Entity,
