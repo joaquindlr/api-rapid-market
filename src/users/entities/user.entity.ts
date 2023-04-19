@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Market } from 'src/market/entities/market.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
 @Entity()
 @Unique(['email', 'username'])
@@ -38,4 +45,16 @@ export class User {
 
   @Column({ nullable: true })
   confirmationCodeExpirationDate?: string;
+
+  @Column({ default: false })
+  isAdmin: boolean;
+
+  @Column({ default: false })
+  isSeller: boolean;
+
+  @Column({ default: true })
+  isClient: boolean;
+
+  @ManyToOne(() => Market, (market) => market.users)
+  market: Market;
 }

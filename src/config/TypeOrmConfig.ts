@@ -1,4 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Market } from 'src/market/entities/market.entity';
 import { User } from 'src/users/entities/user.entity';
 
 const TypeOrmConfigImport = TypeOrmModule.forRoot({
@@ -7,8 +8,8 @@ const TypeOrmConfigImport = TypeOrmModule.forRoot({
   port: 3306,
   username: 'root',
   password: 'admin',
-  database: 'fast-market',
-  entities: [User],
+  database: 'rapid_market',
+  entities: [User, Market],
   synchronize: true,
   autoLoadEntities: true,
 });
