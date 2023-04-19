@@ -12,6 +12,7 @@ import {
   expirationDateGenerator,
 } from 'src/common/utils/expirationDateGenerator';
 import { ConfirmMailDto } from './dto/confirm-mail-auth.dto';
+import { Token } from './intities/token.entity';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +68,7 @@ export class AuthService {
         throw new HttpException('MAIL_NO_CONFIRMED', HttpStatus.FORBIDDEN);
       }
 
-      const payload = {
+      const payload: Token = {
         id: findUser.id,
         email: findUser.email,
         username: findUser.username,
@@ -77,7 +78,7 @@ export class AuthService {
         marketId: findUser.market.id,
       };
 
-      const token = await this.jwtService.sign(payload);
+      const token = this.jwtService.sign(payload);
 
       const data = {
         token,

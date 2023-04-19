@@ -1,5 +1,11 @@
 import { Market } from 'src/markets/entities/market.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Product {
@@ -18,9 +24,13 @@ export class Product {
   @Column()
   stock: number;
 
-  @Column({ name: 'image_url' })
+  @Column({ name: 'image_url', nullable: true })
   imageUrl: string;
 
-  @ManyToOne(() => Market, (market) => market.products)
+  @Column({ name: 'market_id' })
+  marketId: number;
+
+  @ManyToOne(() => Market)
+  @JoinColumn({ name: 'market_id' })
   market: Market;
 }
