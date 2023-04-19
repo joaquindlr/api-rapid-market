@@ -49,31 +49,44 @@ export class AuthService {
   }
 
   async login(userObject: LoginAuthDto) {
-    const { email, password } = userObject;
-    const findUser = await this.usersRepository.findOneBy({ email });
-    if (!findUser)
-      throw new HttpException('CREDENTIALS_ERROR', HttpStatus.UNAUTHORIZED);
+    try {
+      const { email, password } = userObject;
+      const findUser = await this.usersRepository.findOne({
+        where: { email },
+        relations: ['market'],
+      });
 
-    const checkPassowrd = await compare(password, findUser.password);
-    if (!checkPassowrd)
-      throw new HttpException('CREDENTIALS_ERROR', HttpStatus.UNAUTHORIZED);
+      if (!findUser)
+        throw new HttpException('CREDENTIALS_ERROR', HttpStatus.UNAUTHORIZED);
 
-    if (!findUser.mailConfirmed) {
-      throw new HttpException('MAIL_NO_CONFIRMED', HttpStatus.FORBIDDEN);
+      const checkPassowrd = await compare(password, findUser.password);
+      if (!checkPassowrd)
+        throw new HttpException('CREDENTIALS_ERROR', HttpStatus.UNAUTHORIZED);
+
+      if (!findUser.mailConfirmed) {
+        throw new HttpException('MAIL_NO_CONFIRMED', HttpStatus.FORBIDDEN);
+      }
+
+      const payload = {
+        id: findUser.id,
+        email: findUser.email,
+        username: findUser.username,
+        isAdmin: findUser.isAdmin,
+        isSeller: findUser.isSeller,
+        isClient: findUser.isClient,
+        marketId: findUser.market.id,
+      };
+
+      const token = await this.jwtService.sign(payload);
+
+      const data = {
+        token,
+      };
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
-
-    const payload = {
-      id: findUser.id,
-      email: findUser.email,
-      username: findUser.username,
-    };
-
-    const token = await this.jwtService.sign(payload);
-
-    const data = {
-      token,
-    };
-    return data;
   }
 
   async confirmMail(confimationObject: ConfirmMailDto) {
