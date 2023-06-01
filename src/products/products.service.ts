@@ -5,13 +5,11 @@ import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import instanceMapper from 'src/common/utils/instanceMapper';
-import { JwtService } from '@nestjs/jwt';
 import { Token } from 'src/auth/intities/token.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    private jwtService: JwtService,
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
@@ -26,8 +24,11 @@ export class ProductsService {
     return { data: newProduct, msg: 'Product created' };
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(userTokenData: Token) {
+    const products = await this.productsRepository.findBy({
+      marketId: userTokenData.marketId,
+    });
+    return products;
   }
 
   findOne(id: number) {

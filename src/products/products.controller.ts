@@ -27,8 +27,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Req() req) {
+    return this.productsService.findAll(req.user);
   }
 
   @Get(':id')
